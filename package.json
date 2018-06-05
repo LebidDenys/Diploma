@@ -3,13 +3,18 @@
   "description": "",
   "version": "0.0.16",
   "dependencies": {
-    "recompose": "0.26.0",
-    "react-google-maps": "9.4.3",
+    "react": "16.0.0",
     "react-dom": "16.0.0",
-    "react": "16.0.0"
+    "react-google-maps": "9.4.3",
+    "react-router-dom": "^4.2.2",
+    "recompose": "0.26.0"
   },
   "devDependencies": {
-    "react-scripts": "^1.0.0"
+    "css-loader": "^0.28.11",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
+    "react-scripts": "^1.0.0",
+    "style-loader": "^0.21.0"
   },
   "scripts": {
     "start": "react-scripts start",
