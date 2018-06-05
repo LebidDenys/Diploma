@@ -3,11 +3,13 @@
   "description": "",
   "version": "0.0.16",
   "dependencies": {
+    "prop-types": "^15.6.1",
     "react": "16.0.0",
     "react-dom": "16.0.0",
     "react-google-maps": "9.4.3",
     "react-router-dom": "^4.2.2",
-    "recompose": "0.26.0"
+    "recompose": "0.26.0",
+    "semantic-ui-react": "^0.81.1"
   },
   "devDependencies": {
     "css-loader": "^0.28.11",
