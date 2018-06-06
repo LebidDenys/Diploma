@@ -1,21 +1,14 @@
 import React from 'react';
-import { render } from 'react-dom';
-import Map from './map/map.component';
 import Header from './header/header.component';
+import Body from './Body';
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-    };
-
-    render() {
-        return (
-            <div>
-                <Header />
-                <Map />
-            </div>
-        );
-    }
+const App = () => {
+    return (
+        <div>
+            <Header />
+            <Body />
+        </div>
+    );
 }
 
 export default App;
