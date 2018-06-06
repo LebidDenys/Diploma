@@ -1,0 +1,12 @@
+.menu {
+    margin: 20px 0 20px 20px!important;
+}
+
+.link {
+    text-transform: uppercase;
+    text-decoration: none;
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    color: #3399ff;
+}
+
