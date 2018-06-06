@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Route } from 'react-router-dom'
+import { Link, Route, withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import MapContainer from './map/map.container'
@@ -33,7 +33,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchData,
 }, dispatch);
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(App);
+)(App));
