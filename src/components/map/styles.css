@@ -7,3 +7,18 @@
     font-size: 14px;
     margin: 5px;
 }
+
+.wrapper{
+    display: flex;
+    margin: 10px;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.message{
+    margin-top: 25px !important;
+    width: 25%;
+    height: 80px;
+}

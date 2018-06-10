@@ -1,54 +1,42 @@
+import MEASUREMENTS from './measurements'
 export const FETCH_DATA = 'app/FETCH_DATA';
+export const CHANGE_YEAR = 'app/CHANGE_YEAR';
+export const CHANGE_MONTH = 'app/CHANGE_MONTH';
+export const CREATE_MEASUREMENT = 'app/CREATE_MEASUREMENT';
 
 const initialState = {
-    points: [
-        {
-            id: 1,
-            lat: 50.4508,
-            lng: 30.5289,
-            year: 2017,
-            month: 'jun',
-            lead: 14.34,
-            cadmium: 12.65,
-            zinc: 34.2323,
-            copper: 23.23,
-            chrome: 98.87,
-            nikel: 43.435
-        },
-        {
-            id: 2,
-            lat: 49.979,
-            lng: 36.23,
-            year: 2017,
-            month: 'jul',
-            lead: 12.34,
-            cadmium: 16.65,
-            zinc: 23.2323,
-            copper: 54.23,
-            chrome: 23.87,
-            nikel: 76.435
-        },
-        {
-            id: 3,
-            lat: 49.831,
-            lng: 24.047,
-            year: 2017,
-            month: 'aug',
-            lead: 67.34,
-            cadmium: 16.65,
-            zinc: 23.2323,
-            copper: 54.23,
-            chrome: 23.87,
-            nikel: 76.435
-        },
-    ]
-}
+    measurements: MEASUREMENTS,
+    year: 2012,
+    month: 'dec'
+};
 
 export default (state = initialState, action) => {
     switch (action.type) {
         case FETCH_DATA:
             return {
-                points: action.payload
+                ...state,
+                measurements: action.payload
+            };
+
+        case CHANGE_YEAR:
+            return {
+                ...state,
+                year: action.payload.year
+            };
+
+        case CHANGE_MONTH:
+            return {
+                ...state,
+                month: action.payload.month
+            };
+
+        case CREATE_MEASUREMENT:
+            return {
+                ...state,
+                measurements: [
+                    ...state.measurements,
+                    action.payload.measurement
+                ]
             };
 
         default:
@@ -56,12 +44,45 @@ export default (state = initialState, action) => {
     }
 }
 
-export const fetchData = () => {
+export const fetchData = ({ measurements }) => {
     return dispatch => {
         dispatch({
             type: FETCH_DATA,
             payload: {
-                points: [1, 2 , 3]
+                measurements
+            }
+        });
+    }
+};
+
+export const changeYear = ( year ) => {
+    return dispatch => {
+        dispatch({
+            type: CHANGE_YEAR,
+            payload: {
+                year
+            }
+        });
+    }
+};
+
+export const changeMonth = ( month ) => {
+    return dispatch => {
+        dispatch({
+            type: CHANGE_MONTH,
+            payload: {
+                month
+            }
+        });
+    }
+};
+
+export const createMeasurement = ( measurement ) => {
+    return dispatch => {
+        dispatch({
+            type: CREATE_MEASUREMENT,
+            payload: {
+                measurement
             }
         });
     }

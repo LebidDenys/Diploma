@@ -4,29 +4,32 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import MapContainer from './map/map.container'
 import Admin from './admin/admin.component'
+import FormComponent from './admin/form/form.component'
 import './styles.css'
 import {
-    fetchData
+    fetchData,
 } from '../modules/app'
 
 const App = () => {
     return (
         <div>
-            <header className="menu">
+            <header className="header">
                 <Link to='/map' className="link">map</Link>
                 <Link to='/admin' className="link">admin</Link>
             </header>
 
             <main>
-                <Route path='/map' component={MapContainer} />
-                <Route path='/admin' component={Admin}/>
+                <Route path='/map' render={() => <MapContainer mode='user'/>} />
+                <Route exact path='/admin' component={Admin}/>
+                <Route path='/admin/create' render={() => <FormComponent mode='create'/>}/>
+                <Route path='/admin/edit' render={() => <MapContainer mode='admin'/>}/>
             </main>
         </div>
     );
 };
 
 const mapStateToProps = state => ({
-    points: state.app.points
+    measurements: state.app.measurements
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

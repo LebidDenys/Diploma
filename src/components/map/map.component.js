@@ -6,7 +6,6 @@ import {
     GoogleMap,
     Marker
 } from 'react-google-maps';
-import { connect } from "react-redux";
 
 const apiKey = 'AIzaSyB0vGcXPWwMQDdcf2Xk4-9rHYy_izKltJ0';
 
@@ -22,22 +21,16 @@ const Map = compose(
     withGoogleMap
 )(props => (
     <GoogleMap defaultZoom={6} defaultCenter={{ lat: 48.83614219, lng: 31.74842143 }}>
-        {props.points.map(point=> {
+        {props.measurements && props.measurements.map(measurement=> {
             return (
                 <Marker
-                    key={point.id}
-                    position={{ lat: point.lat, lng: point.lng }}
-                    onClick={() => props.onMarkerClick(point)}
+                    key={measurement.id || measurement.lat}
+                    position={{ lat: measurement.lat, lng: measurement.lng }}
+                    onClick={() => props.onMarkerClick(measurement)}
                 />
             )
         })}
     </GoogleMap>
 ));
 
-const mapStateToProps = state => ({
-    points: state.app.points
-});
-
-export default connect(
-    mapStateToProps,
-)(Map);
+export default Map;
