@@ -7,7 +7,7 @@ import Map from './map.component'
 import MonthPicker from '../common/month-picker/month-picker.component'
 import { connect } from 'react-redux'
 import './styles.css'
-import { changeMonth, changeYear } from '../../modules/app'
+import { changeMonth, changeYear, fetchData } from '../../modules/app'
 
 class MapContainer extends Component {
     state = {
@@ -44,7 +44,7 @@ class MapContainer extends Component {
 
     handleYearChange = e => {
         this.props.changeYear(e.target.innerText);
-        console.log(this.state.selectedMeasurements)
+        this.props.fetchData();
     };
 
     render() {
@@ -87,7 +87,8 @@ MapContainer.propTypes = {
     activeMonth: PropTypes.string.isRequired,
     mode: PropTypes.string.isRequired,
     changeMonth: PropTypes.func.isRequired,
-    changeYear: PropTypes.func.isRequired
+    changeYear: PropTypes.func.isRequired,
+    fetchData: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -98,7 +99,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     changeMonth,
-    changeYear
+    changeYear,
+    fetchData
 }, dispatch);
 
 export default connect(

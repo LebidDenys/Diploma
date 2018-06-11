@@ -19,7 +19,7 @@ const App = () => {
             </header>
 
             <main>
-                <Route path='/map' render={() => <MapContainer mode='user'/>} />
+                <Route path='/map' render={() => <MapContainer mode='user' />} />
                 <Route exact path='/admin' component={Admin}/>
                 <Route path='/admin/create' render={() => <FormComponent mode='create'/>}/>
                 <Route path='/admin/edit' render={() => <MapContainer mode='admin'/>}/>

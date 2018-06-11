@@ -4,6 +4,7 @@
   "version": "0.0.16",
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.49",
+    "axios": "^0.18.0",
     "classnames": "^2.2.5",
     "fbjs": "^0.8.16",
     "history": "^4.7.2",
@@ -25,8 +26,6 @@
   },
   "devDependencies": {
     "css-loader": "^0.28.11",
-    "less": "^3.0.4",
-    "less-loader": "^4.1.0",
     "react-scripts": "^1.0.0",
     "style-loader": "^0.21.0"
   },

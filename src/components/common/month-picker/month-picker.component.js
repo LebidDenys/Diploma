@@ -11,7 +11,8 @@ const MonthPicker = ({ activeMonth, activeYear, onMonthChange, onYearChange }) =
             <Dropdown
                 className="dropdown"
                 placeholder='Select Year'
-                fluid selection
+                fluid
+                selection
                 options={years}
                 value={activeYear}
                 onChange={onYearChange}
