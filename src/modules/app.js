@@ -1,27 +1,25 @@
-import axios from 'axios'
 import MEASUREMENTS from './measurements'
 export const FETCH_DATA = 'app/FETCH_DATA';
 export const CHANGE_YEAR = 'app/CHANGE_YEAR';
 export const CHANGE_MONTH = 'app/CHANGE_MONTH';
 export const CREATE_MEASUREMENT = 'app/CREATE_MEASUREMENT';
 
-const host = 'localhost:3000';
 
 const initialState = {
+    loadingStatus: '',
+    error: '',
     measurements: MEASUREMENTS,
-    year: 2012,
+    year: 2018,
     month: 'dec'
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
         case FETCH_DATA:
-            console.log(action.payload)
             return {
                 ...state,
-                //measurements: action.payload
+                measurements: action.payload.data
             };
-
 
         case CHANGE_YEAR:
             return {
@@ -49,25 +47,17 @@ export default (state = initialState, action) => {
     }
 }
 
-export const fetchData = () => {
-    const url = `${host}/measurements`;
-    return dispatch =>
+
+export const fetchData = ( data ) => {
+    return dispatch => {
         dispatch({
             type: FETCH_DATA,
-            payload: async () => ({
-                data: await axios
-                    .get(url)
-                    .then(res => res.data)
-                    .catch(error => {
-                        const errorData = {
-                            error,
-                        };
-                        throw errorData
-                    }),
-            }),
-        })
-}
-
+            payload: {
+                data
+            }
+        });
+    }
+};
 
 export const changeYear = ( year ) => {
     return dispatch => {

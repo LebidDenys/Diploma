@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { compose, withProps } from 'recompose';
 import {
     withScriptjs,
@@ -6,6 +7,8 @@ import {
     GoogleMap,
     Marker
 } from 'react-google-maps';
+import { MeasurementShape } from '../common/constants/shapes'
+import { InfoBox }  from "react-google-maps/lib/components/addons/InfoBox";
 
 const apiKey = 'AIzaSyB0vGcXPWwMQDdcf2Xk4-9rHYy_izKltJ0';
 
@@ -24,13 +27,37 @@ const Map = compose(
         {props.measurements && props.measurements.map(measurement=> {
             return (
                 <Marker
-                    key={measurement.id || measurement.lat}
+                    key={measurement._id}
                     position={{ lat: measurement.lat, lng: measurement.lng }}
                     onClick={() => props.onMarkerClick(measurement)}
-                />
+                >
+                    {props.activeMarkerId === measurement._id &&
+                        <InfoBox
+                            className="info-wrappper"
+                            options={{ closeBoxURL: ``, enableEventPropagation: true }}
+                        >
+                            <div className="info-box">
+                                {Object.keys(measurement).map(key =>
+                                    (key !== '_id' && key !== 'updated_at' && key !== '__v' && <span className="description-item">{key}: {measurement[key]}<br /></span>)
+                                )}
+                            </div>
+                        </InfoBox>
+                    }
+                </Marker>
             )
         })}
     </GoogleMap>
 ));
+
+Map.propTypes = {
+    measurements: PropTypes.arrayOf(PropTypes.shape(MeasurementShape)).isRequired,
+    activeMarkerId: PropTypes.string,
+    onMarkerClick: PropTypes.func.isRequired,
+    onInfoClick: PropTypes.func.isRequired,
+};
+
+Map.defaultProps = {
+    activeMarkerId: ''
+}
 
 export default Map;

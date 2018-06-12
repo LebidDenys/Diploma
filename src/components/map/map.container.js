@@ -12,7 +12,7 @@ import { changeMonth, changeYear, fetchData } from '../../modules/app'
 class MapContainer extends Component {
     state = {
         selectedMeasurements: [],
-        selectedMarker: {},
+        activeMarkerId: ''
     };
 
     componentWillReceiveProps(nextProps) {
@@ -21,19 +21,21 @@ class MapContainer extends Component {
         this.setState({
             selectedMeasurements
         })
-    }
+    };
 
     filterMeasurement = (arr, key, value) => {
         return arr.filter(item => item[key] === value)
     };
 
     handleMarkerClick = marker => {
-        if (this.props.mode === 'user'){
+        if (this.state.activeMarkerId === marker._id){
             this.setState({
-                selectedMarker: marker
+                activeMarkerId:''
             })
         } else {
-
+            this.setState({
+                activeMarkerId: marker._id
+            })
         }
     };
 
@@ -44,7 +46,6 @@ class MapContainer extends Component {
 
     handleYearChange = e => {
         this.props.changeYear(e.target.innerText);
-        this.props.fetchData();
     };
 
     render() {
@@ -69,13 +70,9 @@ class MapContainer extends Component {
                 </div>
                 <Map
                     measurements={this.state.selectedMeasurements}
+                    activeMarkerId={this.state.activeMarkerId}
                     onMarkerClick={this.handleMarkerClick}
                 />
-                <div className="description-wrapper">
-                    {this.state.selectedMarker && Object.keys(this.state.selectedMarker).map(key =>
-                        (<span className="description-item">{key}: {this.state.selectedMarker[key]}</span>)
-                    )}
-                </div>
             </div>
         )
     }

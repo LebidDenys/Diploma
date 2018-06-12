@@ -1,26 +1,27 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
-import { Form, Message, Button } from 'semantic-ui-react'
+import { Form, Button } from 'semantic-ui-react'
 import './styles.css'
 import MonthPicker from '../../common/month-picker/month-picker.component'
 import { createMeasurement} from '../../../modules/app'
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 
 class FormComponent extends Component {
     state = {
         measurement: this.props.measurement || {
             month: '',
-            year: 2018,
+            year: 2015,
             lat: 0,
             lng: 0,
-            lead: 0,
+            plumbum: 0,
             cadmium: 0,
             zinc: 0,
             copper: 0,
             chrome: 0,
-            nikel: 0
+            nikel: 0,
+            manganese: 0,
+            iron: 0
         }
     };
 
@@ -55,7 +56,7 @@ class FormComponent extends Component {
     };
 
     handleCreate = () => {
-        this.props.createMeasurement(this.state.measurement);
+        this.props.onCreate(this.state.measurement)
     };
 
     render() {
@@ -77,32 +78,41 @@ class FormComponent extends Component {
                         <input placeholder='Longitude' id='lng' onChange={this.handleFieldChange} />
                     </Form.Field>
                     <Form.Field>
-                        <label>Lead</label>
-                        <input placeholder='Lead' id='lead' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
                         <label>Cadmium</label>
                         <input placeholder='Cadmium' id='cadmium' onChange={this.handleFieldChange} />
                     </Form.Field>
                     <Form.Field>
-                        <label>Zinc</label>
-                        <input placeholder='Zinc' id='zinc' onChange={this.handleFieldChange} />
+                        <label>Iron</label>
+                        <input placeholder='Iron' id='iron' onChange={this.handleFieldChange} />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Manganese</label>
+                        <input placeholder='Manganese' id='manganese' onChange={this.handleFieldChange} />
                     </Form.Field>
                     <Form.Field>
                         <label>Copper</label>
                         <input placeholder='Copper' id='copper' onChange={this.handleFieldChange} />
                     </Form.Field>
                     <Form.Field>
+                        <label>Nikel</label>
+                        <input placeholder='Nikel' id='nikel' onChange={this.handleFieldChange} />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Plumbum</label>
+                        <input placeholder='Plumbum' id='plumbum' onChange={this.handleFieldChange} />
+                    </Form.Field>
+                    <Form.Field>
                         <label>Chrome</label>
                         <input placeholder='Chrome' id='chrome' onChange={this.handleFieldChange} />
                     </Form.Field>
                     <Form.Field>
-                        <label>Nikel</label>
-                        <input placeholder='Nikel' id='nikel' onChange={this.handleFieldChange} />
+                        <label>Zinc</label>
+                        <input placeholder='Zinc' id='zinc' onChange={this.handleFieldChange} />
                     </Form.Field>
+
                     {this.props.mode === 'create' &&
-                        <Button primary>
-                            <Link to="/map" className="create-link">Create</Link>
+                        <Button primary onClick={this.handleCreate}>
+                            CREATE
                         </Button>
                     }
                 </Form>

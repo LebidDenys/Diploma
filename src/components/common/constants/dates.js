@@ -30,12 +30,12 @@ export const years = [
 
 export const months = [
     {
-        value: 'dec',
-        text: 'December',
-    },
-    {
         value: 'jan',
         text: 'January',
+    },
+    {
+        value: 'feb',
+        text: 'February',
     },
     {
         value: 'mar',
@@ -72,4 +72,8 @@ export const months = [
     {
         value: 'nov',
         text: 'November',
-    }];
+    },
+    {
+        value: 'dec',
+        text: 'December',
+    },];
