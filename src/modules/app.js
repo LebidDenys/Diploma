@@ -10,7 +10,8 @@ const initialState = {
     error: '',
     measurements: MEASUREMENTS,
     year: 2018,
-    month: 'dec'
+    month: 'dec',
+    isAuth: false
 };
 
 export default (state = initialState, action) => {

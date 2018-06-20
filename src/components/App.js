@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import MapContainer from './map/map.container'
 import Admin from './admin/admin.component'
 import FormComponent from './admin/form/form.component'
+import PrivateRoute from './common/privateRoute.component'
+import Login from './logging/login.component'
 import './styles.css'
 import { fetchData, createMeasurement } from '../modules/app'
 
@@ -43,7 +45,7 @@ class App extends Component {
             .catch(e => {
                 console.log(e);
             });
-    }
+    };
 
     render() {
         return (
@@ -55,9 +57,10 @@ class App extends Component {
 
                 <main>
                     <Route path='/map' render={() => <MapContainer mode='user' />} />
-                    <Route exact path='/admin' component={Admin}/>
-                    <Route path='/admin/create' render={() => <FormComponent mode='create' onCreate={this.handleCreateMeasurement}/>}/>
-                    <Route path='/admin/edit' render={() => <MapContainer mode='admin'/>}/>
+                    <Route path='/login' render={() => <Login />} />
+                    <PrivateRoute isAuth={this.props.isAuth} exact path='/admin' component={Admin}/>
+                    <PrivateRoute path='/admin/create' render={() => <FormComponent mode='create' onCreate={this.handleCreateMeasurement}/>}/>
+                    <PrivateRoute path='/admin/edit' render={() => <MapContainer mode='admin'/>}/>
                 </main>
             </div>
         )
@@ -66,6 +69,7 @@ class App extends Component {
 
 const mapStateToProps = state => ({
     measurements: state.app.measurements,
+    isAuth: state.app.isAuth
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
