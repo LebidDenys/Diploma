@@ -4,12 +4,12 @@ import PropTypes from 'prop-types'
 import { Form, Button } from 'semantic-ui-react'
 import './styles.css'
 import MonthPicker from '../../common/month-picker/month-picker.component'
-import { createMeasurement} from '../../../modules/app'
+import { createMeasurement } from '../../../modules/app'
 import { connect } from "react-redux";
 
 class FormComponent extends Component {
     state = {
-        measurement: this.props.measurement || {
+        measurement: {
             month: '',
             year: 2015,
             lat: 0,
@@ -25,6 +25,15 @@ class FormComponent extends Component {
         }
     };
 
+    componentDidMount(){
+        if(this.props.mode === 'edit'){
+            const measurement = this.props.measurements.filter(item => item._id === this.props.match.params.id);
+            console.log(measurement)
+            this.setState(measurement);
+            console.log(measurement, this.state)
+        }
+    }
+
     handleMonthChange = e => {
         const month = e.target.innerText.substring(0,3).toLowerCase();
         this.setState({
@@ -36,7 +45,7 @@ class FormComponent extends Component {
     };
 
     handleYearChange = e => {
-        const year = parseInt(e.target.innerText);
+        const year = parseInt(e.target.innerText, 10);
         this.setState({
             measurement: {
                 ...this.state.measurement,
@@ -71,7 +80,7 @@ class FormComponent extends Component {
                 <Form className="form-wrapper">
                     <Form.Field>
                         <label>Latitude</label>
-                        <input placeholder='Latitude' id='lat' onChange={this.handleFieldChange} />
+                        <input placeholder='Latitude' id='lat' value={this.state.measurement.lat} onChange={this.handleFieldChange} />
                     </Form.Field>
                     <Form.Field>
                         <label>Longitude</label>
@@ -124,12 +133,15 @@ class FormComponent extends Component {
 FormComponent.propTypes = {
     mode: PropTypes.string.isRequired
 };
+const mapStateToProps = state => ({
+    measurements: state.app.measurements,
+});
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     createMeasurement
 }, dispatch);
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(FormComponent);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Redirect } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { Message } from 'semantic-ui-react'
 import { MeasurementShape } from '../common/constants/shapes'
@@ -37,6 +38,7 @@ class MapContainer extends Component {
                 activeMarkerId: marker._id
             })
         }
+        console.log(this.props.match.params.name)
     };
 
     handleMonthChange = e => {
@@ -49,6 +51,11 @@ class MapContainer extends Component {
     };
 
     render() {
+        if(this.props.mode === 'admin' && this.props.isAuth && this.state.activeMarkerId !== ''){
+            return (
+                <Redirect to={{pathname: `/user/admin/edit/${this.state.activeMarkerId}`, state: {from: this.props.location}, test: 'test'}} />
+            )
+        }
         return (
             <div>
                 <div className="wrapper">
@@ -83,6 +90,7 @@ MapContainer.propTypes = {
     activeYear: PropTypes.number.isRequired,
     activeMonth: PropTypes.string.isRequired,
     mode: PropTypes.string.isRequired,
+    isAuth: PropTypes.bool.isRequired,
     changeMonth: PropTypes.func.isRequired,
     changeYear: PropTypes.func.isRequired,
     fetchData: PropTypes.func.isRequired
@@ -90,8 +98,9 @@ MapContainer.propTypes = {
 
 const mapStateToProps = state => ({
     measurements: state.app.measurements,
-    activeYear: parseInt(state.app.year),
+    activeYear: parseInt(state.app.year, 10),
     activeMonth: state.app.month,
+    isAuth: state.app.isAuth,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

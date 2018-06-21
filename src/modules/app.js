@@ -3,6 +3,8 @@ export const FETCH_DATA = 'app/FETCH_DATA';
 export const CHANGE_YEAR = 'app/CHANGE_YEAR';
 export const CHANGE_MONTH = 'app/CHANGE_MONTH';
 export const CREATE_MEASUREMENT = 'app/CREATE_MEASUREMENT';
+export const LOG_IN = 'app/LOG_IN';
+export const LOG_OUT = 'app/LOG_OUT';
 
 
 const initialState = {
@@ -11,11 +13,27 @@ const initialState = {
     measurements: MEASUREMENTS,
     year: 2018,
     month: 'dec',
-    isAuth: false
+    isAuth: true,
+    userData: {}
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
+
+        case LOG_IN:
+            return {
+                ...state,
+                userData: action.payload.userData,
+                isAuth: true
+            };
+
+        case LOG_OUT:
+            return {
+                ...state,
+                userData: {},
+                isAuth: false
+            };
+
         case FETCH_DATA:
             return {
                 ...state,
@@ -92,3 +110,23 @@ export const createMeasurement = ( measurement ) => {
         });
     }
 };
+
+export const logIn = ( userData ) => {
+    return dispatch => {
+        dispatch({
+            type: LOG_IN,
+            payload: {
+                userData
+            }
+        });
+    }
+};
+
+export const logOut = () => {
+    return dispatch => {
+        dispatch({
+            type: LOG_OUT,
+        });
+    }
+};
+

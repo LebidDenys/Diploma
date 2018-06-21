@@ -1,32 +1,59 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Redirect } from 'react-router-dom'
 import { Form, Button } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import './styles.css'
-import { connect } from "react-redux";
 
 class Login extends Component {
     state = {
         email: '',
-        password: ''
+        password: '',
     };
 
     handleFieldChange = e => {
         this.setState({
-            [e.target.id]: e.target.innerText
+            [e.target.id]: e.target.value
         });
     };
 
+    handleSubmit = () => {
+        this.props.onSignin({
+            email: this.state.email,
+            password: this.state.password
+        })
+    }
+
     render() {
+        if(this.props.isAuth){
+            return (
+                <Redirect
+                    to={{
+                        pathname: "/user/admin",
+                        state: { from: this.props.location }
+                    }}
+                />
+            )
+        }
         return (
             <div className="login-forms">
                 <Form>
                     <Form.Field>
                         <label>Email</label>
-                        <input placeholder='email' id='email' onChange={this.handleFieldChange} />
+                        <input
+                            placeholder='email'
+                            id='email'
+                            onChange={this.handleFieldChange}
+                        />
                     </Form.Field>
                     <Form.Field>
                         <label>Password</label>
-                        <input placeholder='password' id='password' onChange={this.handleFieldChange} />
+                        <input
+                            type='password'
+                            placeholder='password'
+                            id='password'
+                            onChange={this.handleFieldChange}
+                        />
                     </Form.Field>
                     <Button primary onClick={this.handleSubmit}>
                         Log in
@@ -35,6 +62,11 @@ class Login extends Component {
             </div>
         )
     }
+}
+
+Login.propTypes = {
+    isAuth: PropTypes.bool.isRequired,
+    onSignin: PropTypes.func.isRequired
 }
 
 export default Login;

@@ -2,11 +2,27 @@
     margin: 20px 0 20px 20px!important;
 }
 
-.link {
+.header__link, .header__link--log {
     text-transform: uppercase;
     text-decoration: none;
     margin: 20px;
     font-family: Arial, sans-serif;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #3399ff;
     color: #3399ff;
+}
+
+.header__link--log{
+    float: right;
+    margin: -2px 50px 0 0;
+}
+
+.link {
+    text-transform: uppercase;
+    text-decoration: none;
+    margin: 30px;
+    font-family: Arial, sans-serif;
+    color: #3399ff;
+    display: block;
 }
 
