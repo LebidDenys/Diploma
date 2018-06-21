@@ -52,15 +52,20 @@ class App extends Component {
             <div>
                 <header className="header">
                     <Link to='/map' className="link">map</Link>
-                    <Link to='/admin' className="link">admin</Link>
+                    {this.props.isAuth &&
+                        <Link to='/user/admin' className="link">admin</Link>
+                    }
+                    {!this.props.isAuth &&
+                        <Link to='/user/login' className="link">log in</Link>
+                    }
                 </header>
 
                 <main>
                     <Route path='/map' render={() => <MapContainer mode='user' />} />
-                    <Route path='/login' render={() => <Login />} />
+                    <Route path='/user/login' render={() => <Login />} />
                     <PrivateRoute isAuth={this.props.isAuth} exact path='/admin' component={Admin}/>
-                    <PrivateRoute path='/admin/create' render={() => <FormComponent mode='create' onCreate={this.handleCreateMeasurement}/>}/>
-                    <PrivateRoute path='/admin/edit' render={() => <MapContainer mode='admin'/>}/>
+                    <PrivateRoute path='/user/admin/create' render={() => <FormComponent mode='create' onCreate={this.handleCreateMeasurement}/>}/>
+                    <PrivateRoute path='/user/admin/edit' render={() => <MapContainer mode='admin'/>}/>
                 </main>
             </div>
         )
