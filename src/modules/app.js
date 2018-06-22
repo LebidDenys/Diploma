@@ -1,20 +1,23 @@
-import MEASUREMENTS from './measurements'
 export const FETCH_DATA = 'app/FETCH_DATA';
 export const CHANGE_YEAR = 'app/CHANGE_YEAR';
 export const CHANGE_MONTH = 'app/CHANGE_MONTH';
 export const CREATE_MEASUREMENT = 'app/CREATE_MEASUREMENT';
+export const EDIT_MEASUREMENT = 'app/EDIT_MEASUREMENT';
+export const DELETE_MEASUREMENT = 'app/DELETE_MEASUREMENT';
 export const LOG_IN = 'app/LOG_IN';
 export const LOG_OUT = 'app/LOG_OUT';
+export const MARKER_CLICK = 'app/MARKER_CLICK';
 
 
 const initialState = {
     loadingStatus: '',
     error: '',
-    measurements: MEASUREMENTS,
+    measurements: [],
     year: 2018,
     month: 'dec',
     isAuth: true,
-    userData: {}
+    userData: {},
+    selectedMeasurementId: ''
 };
 
 export default (state = initialState, action) => {
@@ -59,6 +62,29 @@ export default (state = initialState, action) => {
                     ...state.measurements,
                     action.payload.measurement
                 ]
+            };
+
+        case EDIT_MEASUREMENT:
+            const updatedMeasurement = action.payload.measurement;
+            return {
+                ...state,
+                measurements: state.measurements.map(
+                    measurement =>
+                        measurement._id === updatedMeasurement._id
+                            ? updatedMeasurement : measurement
+                )
+            };
+
+        case DELETE_MEASUREMENT:
+            console.log(action.payload)
+            return {
+
+            };
+
+        case MARKER_CLICK:
+            return {
+                ...state,
+                selectedMeasurementId: action.payload.markerId
             };
 
         default:
@@ -111,12 +137,45 @@ export const createMeasurement = ( measurement ) => {
     }
 };
 
+export const editMeasurement = ( measurement ) => {
+    return dispatch => {
+        dispatch({
+            type: EDIT_MEASUREMENT,
+            payload: {
+                measurement
+            }
+        });
+    }
+};
+
+export const deleteMeasurement = ( measurementId ) => {
+    return dispatch => {
+        dispatch({
+            type: DELETE_MEASUREMENT,
+            payload: {
+                measurementId
+            }
+        });
+    }
+};
+
 export const logIn = ( userData ) => {
     return dispatch => {
         dispatch({
             type: LOG_IN,
             payload: {
                 userData
+            }
+        });
+    }
+};
+
+export const markerClick = ( markerId ) => {
+    return dispatch => {
+        dispatch({
+            type: MARKER_CLICK,
+            payload: {
+                markerId
             }
         });
     }

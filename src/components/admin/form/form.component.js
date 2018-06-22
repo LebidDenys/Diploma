@@ -1,36 +1,48 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Form, Button } from 'semantic-ui-react'
 import './styles.css'
 import MonthPicker from '../../common/month-picker/month-picker.component'
+import FormItem from './form-item.component'
 import { createMeasurement } from '../../../modules/app'
 import { connect } from "react-redux";
 
 class FormComponent extends Component {
-    state = {
-        measurement: {
-            month: '',
-            year: 2015,
-            lat: 0,
-            lng: 0,
-            plumbum: 0,
-            cadmium: 0,
-            zinc: 0,
-            copper: 0,
-            chrome: 0,
-            nikel: 0,
-            manganese: 0,
-            iron: 0
+    constructor(props){
+        super(props);
+        this.state = {
+            measurement: {
+                month: '',
+                year: 2015,
+                lat: '',
+                lng: '',
+                plumbum: '',
+                cadmium: '',
+                zinc: '',
+                copper: '',
+                chrome: '',
+                nikel: '',
+                manganese: '',
+                iron: ''
+            }
+        };
+        if(this.props.measurements.length === 0){
+            this.props.fetchData();
         }
-    };
+    }
 
-    componentDidMount(){
+
+    componentWillReceiveProps(nextProps){
         if(this.props.mode === 'edit'){
-            const measurement = this.props.measurements.filter(item => item._id === this.props.match.params.id);
-            console.log(measurement)
-            this.setState(measurement);
-            console.log(measurement, this.state)
+            const id = nextProps.selectedMeasurementId || this.props.match.params.id;
+            const measurement = nextProps.measurements.filter(item => item._id === id);
+            if(measurement.length !== 0){
+                this.setState({
+                    measurement: measurement[0]
+                });
+            }
         }
     }
 
@@ -68,6 +80,10 @@ class FormComponent extends Component {
         this.props.onCreate(this.state.measurement)
     };
 
+    handleEdit = () => {
+        this.props.onEdit(this.state.measurement)
+    };
+
     render() {
         return (
             <div>
@@ -78,51 +94,79 @@ class FormComponent extends Component {
                     onYearChange={this.handleYearChange}
                 />
                 <Form className="form-wrapper">
-                    <Form.Field>
-                        <label>Latitude</label>
-                        <input placeholder='Latitude' id='lat' value={this.state.measurement.lat} onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Longitude</label>
-                        <input placeholder='Longitude' id='lng' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Cadmium</label>
-                        <input placeholder='Cadmium' id='cadmium' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Iron</label>
-                        <input placeholder='Iron' id='iron' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Manganese</label>
-                        <input placeholder='Manganese' id='manganese' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Copper</label>
-                        <input placeholder='Copper' id='copper' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Nikel</label>
-                        <input placeholder='Nikel' id='nikel' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Plumbum</label>
-                        <input placeholder='Plumbum' id='plumbum' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Chrome</label>
-                        <input placeholder='Chrome' id='chrome' onChange={this.handleFieldChange} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Zinc</label>
-                        <input placeholder='Zinc' id='zinc' onChange={this.handleFieldChange} />
-                    </Form.Field>
-
+                    <FormItem
+                        name='Latitude'
+                        id='lat'
+                        value={this.state.measurement.lat}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Longitude'
+                        id='lng'
+                        value={this.state.measurement.lng}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Cadmium'
+                        id='cadmium'
+                        value={this.state.measurement.cadmium}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Iron'
+                        id='iron'
+                        value={this.state.measurement.iron}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Manganese'
+                        id='manganese'
+                        value={this.state.measurement.manganese}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Copper'
+                        id='copper'
+                        value={this.state.measurement.copper}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Nikel'
+                        id='nikel'
+                        value={this.state.measurement.nikel}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Plumbum'
+                        id='plumbum'
+                        value={this.state.measurement.plumbum}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Chrome'
+                        id='chrome'
+                        value={this.state.measurement.chrome}
+                        onChange={this.handleFieldChange}
+                    />
+                    <FormItem
+                        name='Zinc'
+                        id='zinc'
+                        value={this.state.measurement.zinc}
+                        onChange={this.handleFieldChange}
+                    />
                     {this.props.mode === 'create' &&
-                        <Button primary onClick={this.handleCreate}>
-                            CREATE
-                        </Button>
+                        <Link to='/map'>
+                            <Button primary onClick={this.handleCreate}>
+                                CREATE
+                            </Button>
+                        </Link>
+                    }
+                    {this.props.mode === 'edit' &&
+                        <Link to='/map'>
+                            <Button primary onClick={this.handleEdit}>
+                                SAVE
+                            </Button>
+                        </Link>
                     }
                 </Form>
             </div>
@@ -131,10 +175,20 @@ class FormComponent extends Component {
 }
 
 FormComponent.propTypes = {
-    mode: PropTypes.string.isRequired
+    mode: PropTypes.string.isRequired,
+    fetchData: PropTypes.func.isRequired,
+    onCreate: PropTypes.func,
+    onEdit: PropTypes.func,
 };
+
+FormComponent.defaultProps = {
+    onCreate: null,
+    onEdit: null,
+};
+
 const mapStateToProps = state => ({
     measurements: state.app.measurements,
+    measurementId: state.app.selectedMeasurementId
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

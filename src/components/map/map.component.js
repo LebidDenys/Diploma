@@ -38,7 +38,7 @@ const Map = compose(
                         >
                             <div className="info-box">
                                 {Object.keys(measurement).map(key =>
-                                    (key !== '_id' && key !== 'updated_at' && key !== '__v' && <span className="description-item">{key}: {measurement[key]}<br /></span>)
+                                    (key !== '_id' && key !== 'updated_at' && key !== '__v' && <span key={key} className="description-item">{key}: {measurement[key]}<br /></span>)
                                 )}
                             </div>
                         </InfoBox>
@@ -53,7 +53,6 @@ Map.propTypes = {
     measurements: PropTypes.arrayOf(PropTypes.shape(MeasurementShape)).isRequired,
     activeMarkerId: PropTypes.string,
     onMarkerClick: PropTypes.func.isRequired,
-    onInfoClick: PropTypes.func.isRequired,
 };
 
 Map.defaultProps = {
