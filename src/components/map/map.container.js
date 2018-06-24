@@ -8,25 +8,16 @@ import Map from './map.component'
 import MonthPicker from '../common/month-picker/month-picker.component'
 import { connect } from 'react-redux'
 import './styles.css'
-import { changeMonth, changeYear, fetchData, markerClick } from '../../modules/app'
+import { changeMonth, changeYear, fetchMeasurements } from '../../modules/app'
 
 class MapContainer extends Component {
     constructor(props){
-        super(props)
-        let selectedMeasurements = this.filterMeasurement(this.props.measurements, 'year', this.props.activeYear);
-        selectedMeasurements = this.filterMeasurement(selectedMeasurements, 'month', this.props.activeMonth);
+        super(props);
         this.state = {
-            selectedMeasurements: selectedMeasurements,
-            deletingMarkerId: '',
+            selectedMarkerId: '',
             isModalOpen: false
         };
     }
-
-    selectMeasurements
-
-    filterMeasurement = (arr, key, value) => {
-        return arr.filter(item => item[key] === value)
-    };
 
     handleMarkerClick = marker => {
         if(this.props.mode === 'delete'){
@@ -35,10 +26,14 @@ class MapContainer extends Component {
                 isModalOpen: true
             })
         } else {
-            if (this.props.selectedMarkerId === marker._id){
-                this.props.markerClick('')
+            if (this.state.selectedMarkerId === marker._id){
+                this.setState({
+                    selectedMarkerId: ''
+                })
             } else {
-                this.props.markerClick(marker._id)
+                this.setState({
+                    selectedMarkerId: marker._id
+                })
             }
         }
     };
@@ -58,17 +53,16 @@ class MapContainer extends Component {
     handleMonthChange = e => {
         const month = e.target.innerText.substring(0,3).toLowerCase();
         this.props.changeMonth(month);
-        console.log(this.state.selectedMeasurements)
     };
 
     handleYearChange = e => {
-        this.props.changeYear(e.target.innerText);
+        this.props.changeYear(parseInt(e.target.innerText, 10));
     };
 
     render() {
-        if(this.props.mode === 'edit' && this.props.isAuth && this.props.selectedMarkerId !== ''){
+        if(this.props.mode === 'edit' && this.props.isAuth && this.state.selectedMarkerId !== ''){
             return (
-                <Redirect to={{pathname: `/admin/edit/${this.props.selectedMarkerId}`, state: {from: this.props.location}, test: 'test'}} />
+                <Redirect to={{pathname: `/admin/edit/${this.state.selectedMarkerId}`, state: {from: this.props.location}, test: 'test'}} />
             )
         }
         return (
@@ -97,7 +91,7 @@ class MapContainer extends Component {
                         onMonthChange={this.handleMonthChange}
                         onYearChange={this.handleYearChange}
                     />
-                    {this.state.selectedMeasurements.length === 0 &&
+                    {this.props.selectedMeasurements.length === 0 &&
                         <Message className="message">
                             <p>
                                 <span className="bold">Sorry</span>
@@ -108,8 +102,8 @@ class MapContainer extends Component {
                     }
                 </div>
                 <Map
-                    measurements={this.state.selectedMeasurements}
-                    activeMarkerId={this.props.selectedMarkerId}
+                    measurements={this.props.selectedMeasurements}
+                    activeMarkerId={this.state.selectedMarkerId}
                     onMarkerClick={this.handleMarkerClick}
                 />
             </div>
@@ -118,7 +112,7 @@ class MapContainer extends Component {
 }
 
 MapContainer.propTypes = {
-    measurements: PropTypes.arrayOf(PropTypes.shape(MeasurementShape)).isRequired,
+    measurements: PropTypes.arrayOf(PropTypes.shape(MeasurementShape)),
     activeYear: PropTypes.number.isRequired,
     activeMonth: PropTypes.string.isRequired,
     mode: PropTypes.string.isRequired,
@@ -126,7 +120,7 @@ MapContainer.propTypes = {
     isAuth: PropTypes.bool.isRequired,
     changeMonth: PropTypes.func.isRequired,
     changeYear: PropTypes.func.isRequired,
-    fetchData: PropTypes.func.isRequired,
+    fetchMeasurements: PropTypes.func.isRequired,
     onDelete: PropTypes.func
 };
 
@@ -136,17 +130,16 @@ MapContainer.defaultProps = {
 
 const mapStateToProps = state => ({
     measurements: state.app.measurements,
+    selectedMeasurements: state.app.selectedMeasurements,
     activeYear: parseInt(state.app.year, 10),
     activeMonth: state.app.month,
     isAuth: state.app.isAuth,
-    selectedMarkerId: state.app.selectedMeasurementId
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     changeMonth,
     changeYear,
-    fetchData,
-    markerClick
+    fetchMeasurements,
 }, dispatch);
 
 export default connect(

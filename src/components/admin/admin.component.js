@@ -11,6 +11,7 @@ class Admin extends Component {
                 <Link className="link" to='/admin/edit'>Edit exciting measurement</Link>
                 <Link className="link" to='/admin/delete'>Delete exciting measurement</Link>
                 <Link className="link" to='/admin/createUser'>Add new User</Link>
+                <Link className="link" to='/admin/createPoint'>Add new Point</Link>
             </div>
         )
     }

@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Form } from 'semantic-ui-react'
 
-const FormItem = ({name, id, value, onChange}) => {
+const FormItem = ({name, type, id, value, onChange}) => {
     return (
         <Form.Field>
             <label>{name}</label>
-            <input placeholder={name} id={id} value={value} onChange={onChange} />
+            <input type={type} placeholder={name} id={id} value={value} onChange={onChange} />
         </Form.Field>
     )
 };
@@ -14,12 +14,14 @@ const FormItem = ({name, id, value, onChange}) => {
 FormItem.propTypes = {
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     value: PropTypes.any,
     onChange: PropTypes.func.isRequired,
 };
 
 FormItem.defaultProps = {
-    value: ''
+    value: '',
+    type: 'text'
 }
 
 export default FormItem;

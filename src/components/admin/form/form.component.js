@@ -2,41 +2,46 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Form, Button } from 'semantic-ui-react'
+import { Form, Button, Dropdown } from 'semantic-ui-react'
+import { toastr } from 'react-redux-toastr'
 import './styles.css'
 import MonthPicker from '../../common/month-picker/month-picker.component'
-import FormItem from './form-item.component'
+import FormItem from '../../common/form-item/form-item.component'
 import { createMeasurement } from '../../../modules/app'
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
+import {years} from '../../common/constants/dates';
+import { MeasurementShape, PointShape } from '../../common/constants/shapes';
 
 class FormComponent extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            measurement: {
-                month: '',
-                year: 2015,
-                lat: '',
-                lng: '',
-                plumbum: '',
-                cadmium: '',
-                zinc: '',
-                copper: '',
-                chrome: '',
-                nikel: '',
-                manganese: '',
-                iron: ''
-            }
-        };
+        const id = props.match.params.id;
         if(this.props.measurements.length === 0){
             this.props.fetchData();
         }
+        const measurement = props.measurements.filter(item => item._id === id);
+        this.state = {
+            measurement: measurement.length !== 0 ?
+                measurement[0] :
+                {
+                    point: '',
+                    month: '',
+                    year: 2015,
+                    plumbum: '',
+                    cadmium: '',
+                    zinc: '',
+                    copper: '',
+                    chrome: '',
+                    nikel: '',
+                    manganese: '',
+                    iron: ''
+                }
+        };
     }
-
 
     componentWillReceiveProps(nextProps){
         if(this.props.mode === 'edit'){
-            const id = nextProps.selectedMeasurementId || this.props.match.params.id;
+            const id = nextProps.match.params.id;
             const measurement = nextProps.measurements.filter(item => item._id === id);
             if(measurement.length !== 0){
                 this.setState({
@@ -66,6 +71,10 @@ class FormComponent extends Component {
         })
     };
 
+    handlePointChange = e => {
+        console.log(e.target.innerText)
+    };
+
     handleFieldChange = e => {
         const value = parseFloat(e.target.value);
         this.setState({
@@ -76,12 +85,24 @@ class FormComponent extends Component {
         });
     };
 
-    handleCreate = () => {
-        this.props.onCreate(this.state.measurement)
+    handleCreate = e => {
+        const { month, year, lat, lng } = this.state.measurement;
+        if( month === '' || year === '' || lat === '' || lng === ''){
+            toastr.error('Error', `Please fill in month, year, latitude and longitude`);
+            e.preventDefault();
+        } else {
+            this.props.onCreate(this.state.measurement);
+        }
     };
 
-    handleEdit = () => {
-        this.props.onEdit(this.state.measurement)
+    handleEdit = e => {
+        const { month, year, lat, lng } = this.state.measurement;
+        if( month === '' || year === '' || lat === '' || lng === ''){
+            toastr.error('Error', `Please fill in month, year, latitude and longitude`);
+            e.preventDefault();
+        } else {
+            this.props.onEdit(this.state.measurement);
+        }
     };
 
     render() {
@@ -93,6 +114,16 @@ class FormComponent extends Component {
                     onMonthChange={this.handleMonthChange}
                     onYearChange={this.handleYearChange}
                 />
+                <div className="dropdowns-wrapper">
+                    <Dropdown
+                        className="dropdown"
+                        placeholder='Select Point'
+                        selection
+                        options={this.props.points}
+                        value={this.state.point}
+                        onChange={this.handlePointChange}
+                    />
+                </div>
                 <Form className="form-wrapper">
                     <FormItem
                         name='Latitude'
@@ -176,6 +207,8 @@ class FormComponent extends Component {
 
 FormComponent.propTypes = {
     mode: PropTypes.string.isRequired,
+    measurements: PropTypes.arrayOf(PropTypes.shape(MeasurementShape)),
+    points: PropTypes.arrayOf(PropTypes.shape(PointShape)),
     fetchData: PropTypes.func.isRequired,
     onCreate: PropTypes.func,
     onEdit: PropTypes.func,
@@ -188,7 +221,7 @@ FormComponent.defaultProps = {
 
 const mapStateToProps = state => ({
     measurements: state.app.measurements,
-    measurementId: state.app.selectedMeasurementId
+    points: state.app.points,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

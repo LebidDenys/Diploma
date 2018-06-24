@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { years, months } from '../constants/dates';
+import { years, months } from '../constants/dates'
 import { Dropdown } from 'semantic-ui-react'
-import 'semantic-ui-css/semantic.min.css';
 import './styles.css'
 
 const MonthPicker = ({ activeMonth, activeYear, onMonthChange, onYearChange }) => {

@@ -5,13 +5,19 @@ import axios from 'axios';
 import { Link, Route, withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import ReduxToastr from 'react-redux-toastr'
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css'
+import { toastr } from 'react-redux-toastr'
+import 'semantic-ui-css/semantic.min.css'
 import MapContainer from './map/map.container'
 import Admin from './admin/admin.component'
 import FormComponent from './admin/form/form.component'
+import UserForm from './admin/userForm/userForm.component'
+import pointForm from './admin/pointForm/pointForm.component'
 import PrivateRoute from './common/privateRoute.component'
 import Login from './logging/login.component'
 import './styles.css'
-import { fetchData, createMeasurement, logIn, logOut, editMeasurement, dele } from '../modules/app'
+import { fetchMeasurements, fetchPoints, createMeasurement, logIn, logOut, editMeasurement, deleteMeasurement } from '../modules/app'
 
 const host = 'http://localhost:3000/';
 
@@ -32,7 +38,22 @@ class App extends Component {
     requestAPI = () => {
         axios.get(`${host}measurements`)
             .then(response => {
-                this.props.fetchData(response.data);
+                if(response.status === 200){
+                    this.props.fetchMeasurements(response.data);
+                } else {
+                    toastr.error('Error', `Something went wrong while fetching data, server response with status ${response.status}`);
+                }
+            })
+            .catch(e => {
+                console.log(e);
+            });
+        axios.get(`${host}points`)
+            .then(response => {
+                if(response.status === 200){
+                    this.props.fetchPoints(response.data);
+                } else {
+                    toastr.error('Error', `Something went wrong while fetching data, server response with status ${response.status}`);
+                }
             })
             .catch(e => {
                 console.log(e);
@@ -42,20 +63,32 @@ class App extends Component {
     handleCreateMeasurement = measurement => {
         axios.post(`${host}measurements`, measurement)
             .then(response => {
-                this.props.createMeasurement(response.data);
+                if(response.status === 200 && response.data !== 'You have not permission'){
+                    this.props.createMeasurement(response.data);
+                    toastr.success('Success', 'Measurement successfully created');
+                } else {
+                    toastr.error('Error', `Something went wrong server response with status ${response.status}`);
+                }
             })
             .catch(e => {
                 console.log(e);
+                toastr.error('Error', e);
             });
     };
 
     handleEditMeasurement = measurement => {
         axios.put(`${host}measurements/${measurement._id}`, measurement)
             .then(response => {
-                this.props.editMeasurement(response.data);
+                if(response.status === 200 && response.data !== 'You have not permission') {
+                    this.props.editMeasurement(response.data);
+                    toastr.success('Success', 'Measurement successfully updated');
+                } else {
+                    toastr.error('Error', `Something went wrong server response with status ${response.status}`);
+                }
             })
             .catch(e => {
                 console.log(e);
+                toastr.error('Error', e);
             });
     };
 
@@ -63,37 +96,95 @@ class App extends Component {
         console.log('come = ', measurementId)
         axios.delete(`${host}measurements/${measurementId}`)
             .then(response => {
-                console.log(response)
-                this.props.deleteMeasurement();
+                if(response.status === 200 && response.data !== 'You have not permission') {
+                    this.props.deleteMeasurement(measurementId);
+                    toastr.success('Success', 'Measurement successfully deleted');
+                } else {
+                    toastr.error('Error', `Something went wrong server response with status ${response.status}`);
+                }
             })
             .catch(e => {
                 console.log(e);
+                toastr.error('Error', e);
             });
     };
 
     handleSignIn = userData => {
         axios.post(`${host}user/login`, userData)
             .then(response => {
-                this.props.logIn(response.data);
+                if(response.status === 200){
+                    this.props.logIn(response.data);
+                    toastr.success('Hello', response.data.email);
+                } else {
+                    toastr.error('Error', `Something went wrong server response with status ${response.status}`);
+                }
             })
             .catch(e => {
                 console.log(e);
+                toastr.error('Error', e);
             });
     };
 
     handleSignOut = () => {
         axios.post(`${host}user/logout`)
             .then(response => {
-                this.props.logOut();
+                if (response.status === 200){
+                    toastr.success('Good bye', response.data.email);
+                    this.props.logOut();
+                } else {
+                    toastr.error('Error', `Something went wrong server response with status ${response.status}`);
+                }
             })
             .catch(e => {
                 console.log(e);
+                toastr.error('Error', e);
+            });
+    };
+
+    handleCreateUser = userData => {
+        axios.post(`${host}user/signup`, userData)
+            .then(response => {
+                if (response.status === 200 && response.data !== 'You have not permission'){
+                    toastr.success('Success', `User ${response.data.email} successfully created`);
+                } else {
+                    toastr.error('Error', `Something went wrong server response with status ${response.status}`);
+                }
+            })
+            .catch(e => {
+                console.log(e);
+                toastr.error('Error', 'Likely user with that email already exist');
+            });
+    };
+
+    handleCreatePoint = pointData => {
+        axios.post(`${host}points/`, pointData)
+            .then(response => {
+                if (response.status === 200 && response.data !== 'You have not permission'){
+                    console.log(response)
+                    toastr.success('Success', `User ${response.data.email} successfully created`);
+                } else {
+                    toastr.error('Error', `Something went wrong server response with status ${response.status}`);
+                }
+            })
+            .catch(e => {
+                console.log(e);
+                toastr.error('Error', 'Likely user with that email already exist');
             });
     };
 
     render() {
         return (
             <div>
+                <ReduxToastr
+                    timeOut={4000}
+                    newestOnTop={false}
+                    preventDuplicates
+                    position="top-left"
+                    transitionIn="fadeIn"
+                    transitionOut="fadeOut"
+                    progressBar
+                />
+
                 <header className="header">
                     <Link to='/map' className="header__link">map</Link>
                     <Link to='/admin' className="header__link">admin</Link>
@@ -146,6 +237,27 @@ class App extends Component {
                         mode='delete'
                         component={MapContainer}
                     />
+                    <PrivateRoute
+                        exact
+                        isAuth={this.props.isAuth}
+                        path='/admin/createUser'
+                        onCreate={this.handleCreateUser}
+                        component={UserForm}
+                    />
+                    <PrivateRoute
+                        exact
+                        isAuth={this.props.isAuth}
+                        path='/admin/createPoint'
+                        onCreate={this.handleCreatePoint}
+                        component={pointForm}
+                    />
+                    <PrivateRoute
+                        exact
+                        isAuth={this.props.isAuth}
+                        path='/admin/editPoint'
+                        onCreate={this.handleCreateUser}
+                        component={pointForm}
+                    />
 
                 </main>
             </div>
@@ -159,19 +271,23 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    fetchData,
+    fetchMeasurements,
     createMeasurement,
     logIn,
     logOut,
-    editMeasurement
+    editMeasurement,
+    deleteMeasurement,
+    fetchPoints
 }, dispatch);
 
 App.propTypes = {
-    measurements: PropTypes.arrayOf(PropTypes.shape(MeasurementShape)).isRequired,
+    measurements: PropTypes.arrayOf(PropTypes.shape(MeasurementShape)),
     isAuth: PropTypes.bool.isRequired,
-    fetchData: PropTypes.func.isRequired,
+    fetchMeasurements: PropTypes.func.isRequired,
+    fetchPoints: PropTypes.func.isRequired,
     createMeasurement: PropTypes.func.isRequired,
     editMeasurement: PropTypes.func.isRequired,
+    deleteMeasurement: PropTypes.func.isRequired,
     logIn: PropTypes.func.isRequired,
     logOut: PropTypes.func.isRequired
 }

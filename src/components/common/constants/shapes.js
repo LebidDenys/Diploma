@@ -2,8 +2,7 @@ import PropTypes from 'prop-types'
 
 export const MeasurementShape = {
     _id: PropTypes.string.isRequired,
-    lat: PropTypes.number.isRequired,
-    lng: PropTypes.number.isRequired,
+    point: PropTypes.string.isRequired,
     year: PropTypes.number.isRequired,
     month: PropTypes.string.isRequired,
     lead: PropTypes.number,
@@ -12,4 +11,12 @@ export const MeasurementShape = {
     copper: PropTypes.number,
     chrome: PropTypes.number,
     nikel: PropTypes.number
-}
+};
+
+export const PointShape = {
+    _id: PropTypes.string.isRequired,
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+    year: PropTypes.number.isRequired,
+    city: PropTypes.string.isRequired
+};
