@@ -5,7 +5,6 @@ import { ConnectedRouter } from 'react-router-redux'
 import store, { history } from './store'
 import App from './components/App'
 
-
 render(
     <Provider store={store}>
         <ConnectedRouter history={history}>

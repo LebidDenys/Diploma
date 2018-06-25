@@ -29,7 +29,7 @@ class Login extends Component {
             return (
                 <Redirect
                     to={{
-                        pathname: "/user/admin",
+                        pathname: '/admin',
                         state: { from: this.props.location }
                     }}
                 />

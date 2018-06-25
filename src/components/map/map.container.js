@@ -65,6 +65,11 @@ class MapContainer extends Component {
                 <Redirect to={{pathname: `/admin/edit/${this.state.selectedMarkerId}`, state: {from: this.props.location}, test: 'test'}} />
             )
         }
+        if(this.props.mode === 'editPoint' && this.props.isAuth && this.state.selectedMarkerId !== ''){
+            return (
+                <Redirect to={{pathname: `/admin/editPoint/${this.state.selectedMarkerId}`, state: {from: this.props.location}, test: 'test'}} />
+            )
+        }
         return (
             <div>
                 <div className="wrapper">
@@ -91,7 +96,7 @@ class MapContainer extends Component {
                         onMonthChange={this.handleMonthChange}
                         onYearChange={this.handleYearChange}
                     />
-                    {this.props.selectedMeasurements.length === 0 &&
+                    {this.props.selectedMeasurements && this.props.selectedMeasurements.length === 0 &&
                         <Message className="message">
                             <p>
                                 <span className="bold">Sorry</span>

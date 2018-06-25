@@ -4,7 +4,7 @@
 
 .description-item{
     font-family: Arial, sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     margin: 5px;
 }
 
@@ -24,13 +24,14 @@
 }
 
 .info-wrapper{
-    width: 100px;
-    height: 250px;
+    width: 150px;
+    height: 260px;
 }
 
 .info-box{
+    text-align: center;
     padding: 5px;
-    width: 100px;
+    width: 150px;
     height: 250px;
     font-size: 10px;
     border-radius: 5px;

@@ -13,7 +13,7 @@ import MapContainer from './map/map.container'
 import Admin from './admin/admin.component'
 import FormComponent from './admin/form/form.component'
 import UserForm from './admin/userForm/userForm.component'
-import pointForm from './admin/pointForm/pointForm.component'
+import PointForm from './admin/pointForm/pointForm.component'
 import PrivateRoute from './common/privateRoute.component'
 import Login from './logging/login.component'
 import './styles.css'
@@ -22,9 +22,13 @@ import { fetchMeasurements, fetchPoints, createMeasurement, logIn, logOut, editM
 const host = 'http://localhost:3000/';
 
 class App extends Component {
-    state = {
-        shouldLoad: true
-    };
+    constructor(props){
+        super(props);
+        this.state = {
+            shouldLoad: true,
+        };
+    }
+
 
     componentDidMount() {
         if(this.state.shouldLoad){
@@ -61,12 +65,18 @@ class App extends Component {
     };
 
     handleCreateMeasurement = measurement => {
-        axios.post(`${host}measurements`, measurement)
+        axios({
+            method: 'POST',
+            data: measurement,
+            url: `${host}measurements`
+        })
             .then(response => {
+                console.log(response)
                 if(response.status === 200 && response.data !== 'You have not permission'){
                     this.props.createMeasurement(response.data);
                     toastr.success('Success', 'Measurement successfully created');
                 } else {
+                    console.log(response)
                     toastr.error('Error', `Something went wrong server response with status ${response.status}`);
                 }
             })
@@ -114,6 +124,7 @@ class App extends Component {
             .then(response => {
                 if(response.status === 200){
                     this.props.logIn(response.data);
+                    console.log(response.cookie)
                     toastr.success('Hello', response.data.email);
                 } else {
                     toastr.error('Error', `Something went wrong server response with status ${response.status}`);
@@ -161,7 +172,7 @@ class App extends Component {
             .then(response => {
                 if (response.status === 200 && response.data !== 'You have not permission'){
                     console.log(response)
-                    toastr.success('Success', `User ${response.data.email} successfully created`);
+                    toastr.success('Success', `Point #${pointData.pointNumber} successfully created`);
                 } else {
                     toastr.error('Error', `Something went wrong server response with status ${response.status}`);
                 }
@@ -189,7 +200,7 @@ class App extends Component {
                     <Link to='/map' className="header__link">map</Link>
                     <Link to='/admin' className="header__link">admin</Link>
                     {!this.props.isAuth &&
-                        <Link to='/user/login' className="header__link--log">log in</Link>
+                        <Link to='/login' className="header__link--log">log in</Link>
                     }
                     {this.props.isAuth &&
                         <Link to='/map' className="header__link--log" onClick={this.handleSignOut}>log out</Link>
@@ -249,14 +260,7 @@ class App extends Component {
                         isAuth={this.props.isAuth}
                         path='/admin/createPoint'
                         onCreate={this.handleCreatePoint}
-                        component={pointForm}
-                    />
-                    <PrivateRoute
-                        exact
-                        isAuth={this.props.isAuth}
-                        path='/admin/editPoint'
-                        onCreate={this.handleCreateUser}
-                        component={pointForm}
+                        component={PointForm}
                     />
 
                 </main>

@@ -28,7 +28,7 @@ const Map = compose(
             return (
                 <Marker
                     key={measurement._id}
-                    position={{ lat: measurement.lat, lng: measurement.lng }}
+                    position={{ lat: measurement.point.lat, lng: measurement.point.lng }}
                     onClick={() => props.onMarkerClick(measurement)}
                 >
                     {props.activeMarkerId === measurement._id &&
@@ -37,8 +37,11 @@ const Map = compose(
                             options={{ closeBoxURL: ``, enableEventPropagation: true }}
                         >
                             <div className="info-box">
+                                {Object.keys(measurement.point).map(key =>
+                                    (key !== '_id' && key !== 'updated_at' && key !== '__v' && <span key={key} className="description-item">{key}: {measurement.point[key]}<br /></span>)
+                                )}
                                 {Object.keys(measurement).map(key =>
-                                    (key !== '_id' && key !== 'updated_at' && key !== '__v' && <span key={key} className="description-item">{key}: {measurement[key]}<br /></span>)
+                                    (key !== 'point' && key !== '_id' && key !== 'updated_at' && key !== '__v' && <span key={key} className="description-item">{key}: {measurement[key]}<br /></span>)
                                 )}
                             </div>
                         </InfoBox>

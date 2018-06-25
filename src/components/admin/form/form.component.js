@@ -9,17 +9,23 @@ import MonthPicker from '../../common/month-picker/month-picker.component'
 import FormItem from '../../common/form-item/form-item.component'
 import { createMeasurement } from '../../../modules/app'
 import { connect } from 'react-redux';
-import {years} from '../../common/constants/dates';
 import { MeasurementShape, PointShape } from '../../common/constants/shapes';
 
 class FormComponent extends Component {
     constructor(props){
         super(props);
         const id = props.match.params.id;
-        if(this.props.measurements.length === 0){
+        if(this.props.measurements && this.props.measurements.length === 0){
             this.props.fetchData();
         }
         const measurement = props.measurements.filter(item => item._id === id);
+        const points = [];
+        props.points.forEach(point => points.push({
+            text: `${point.city} ${point.pointNumber}`,
+            value: point._id,
+            lat: point.lat,
+            lng: point.lng
+        }));
         this.state = {
             measurement: measurement.length !== 0 ?
                 measurement[0] :
@@ -35,7 +41,8 @@ class FormComponent extends Component {
                     nikel: '',
                     manganese: '',
                     iron: ''
-                }
+                },
+            points: points.length !== 0 ? points : [],
         };
     }
 
@@ -49,30 +56,43 @@ class FormComponent extends Component {
                 });
             }
         }
+        const points = [];
+        nextProps.points.forEach(point => points.push({
+            text: `${point.city} ${point.pointNumber}`,
+            value: point._id,
+            lat: point.lat,
+            lng: point.lng
+        }));
+        this.setState({
+            points
+        });
     }
 
-    handleMonthChange = e => {
-        const month = e.target.innerText.substring(0,3).toLowerCase();
+    handleMonthChange = (e, {value}) => {
         this.setState({
             measurement: {
                 ...this.state.measurement,
-                month
+                month: value
             }
         })
     };
 
-    handleYearChange = e => {
-        const year = parseInt(e.target.innerText, 10);
+    handleYearChange = (e, {value}) => {
         this.setState({
             measurement: {
                 ...this.state.measurement,
-                year
+                year: value
             }
         })
     };
 
-    handlePointChange = e => {
-        console.log(e.target.innerText)
+    handlePointChange = (e, { value }) => {
+        this.setState({
+            measurement: {
+                ...this.state.measurement,
+                point: value
+            },
+        });
     };
 
     handleFieldChange = e => {
@@ -114,29 +134,16 @@ class FormComponent extends Component {
                     onMonthChange={this.handleMonthChange}
                     onYearChange={this.handleYearChange}
                 />
-                <div className="dropdowns-wrapper">
-                    <Dropdown
-                        className="dropdown"
-                        placeholder='Select Point'
-                        selection
-                        options={this.props.points}
-                        value={this.state.point}
-                        onChange={this.handlePointChange}
-                    />
-                </div>
+                <Dropdown
+                    className="dropdown-points"
+                    placeholder='Select Point'
+                    selection
+                    options={this.state.points}
+                    value={this.state.point}
+                    onChange={this.handlePointChange}
+                    search
+                />
                 <Form className="form-wrapper">
-                    <FormItem
-                        name='Latitude'
-                        id='lat'
-                        value={this.state.measurement.lat}
-                        onChange={this.handleFieldChange}
-                    />
-                    <FormItem
-                        name='Longitude'
-                        id='lng'
-                        value={this.state.measurement.lng}
-                        onChange={this.handleFieldChange}
-                    />
                     <FormItem
                         name='Cadmium'
                         id='cadmium'

@@ -18,7 +18,7 @@ const initialState = {
     selectedMeasurements: [],
     year: 2018,
     month: 'dec',
-    isAuth: true,
+    isAuth: false,
     userData: {},
 };
 
@@ -57,17 +57,21 @@ export default (state = initialState, action) => {
             };
 
         case CHANGE_YEAR:
+            selectedMeasurements = filterMeasurements(state.measurements, 'year', action.payload.year);
+            selectedMeasurements = filterMeasurements(selectedMeasurements, 'month', state.month);
             return {
                 ...state,
                 year: action.payload.year,
-                selectedMeasurements: filterMeasurements(state.selectedMeasurements, 'year', action.payload.year)
+                selectedMeasurements: selectedMeasurements
             };
 
         case CHANGE_MONTH:
+            selectedMeasurements = filterMeasurements(state.measurements, 'month', action.payload.month);
+            selectedMeasurements = filterMeasurements(selectedMeasurements, 'year', state.year);
             return {
                 ...state,
                 month: action.payload.month,
-                selectedMeasurements: filterMeasurements(state.selectedMeasurements, 'month', action.payload.month)
+                selectedMeasurements: selectedMeasurements
             };
 
         case CREATE_MEASUREMENT:
