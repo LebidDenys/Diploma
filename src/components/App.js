@@ -11,13 +11,13 @@ import { toastr } from 'react-redux-toastr'
 import 'semantic-ui-css/semantic.min.css'
 import MapContainer from './map/map.container'
 import Admin from './admin/admin.component'
-import FormComponent from './admin/form/form.component'
-import UserForm from './admin/userForm/userForm.component'
-import PointForm from './admin/pointForm/pointForm.component'
+import FormComponent from './admin/measurement-form/form.component'
+import UserForm from './admin/user-form/user-form.component'
+import PointForm from './admin/point-form/point-form.component'
 import PrivateRoute from './common/privateRoute.component'
-import Login from './logging/login.component'
+import Login from './admin/login/login.component'
 import './styles.css'
-import { fetchMeasurements, fetchPoints, createMeasurement, logIn, logOut, editMeasurement, deleteMeasurement } from '../modules/app'
+import { fetchMeasurements, fetchPoints, createMeasurement, logIn, logOut, editMeasurement, deleteMeasurement } from '../redux-modules/app'
 
 const host = 'http://localhost:3000/';
 
@@ -171,7 +171,6 @@ class App extends Component {
         axios.post(`${host}points/`, pointData)
             .then(response => {
                 if (response.status === 200 && response.data !== 'You have not permission'){
-                    console.log(response)
                     toastr.success('Success', `Point #${pointData.pointNumber} successfully created`);
                 } else {
                     toastr.error('Error', `Something went wrong server response with status ${response.status}`);
@@ -179,9 +178,11 @@ class App extends Component {
             })
             .catch(e => {
                 console.log(e);
-                toastr.error('Error', 'Likely user with that email already exist');
+                toastr.error('Error', 'Something went wrong');
             });
     };
+
+    // TODO: RENDER LOGIN LOGOUT LINKS METHOD
 
     render() {
         return (
@@ -208,8 +209,14 @@ class App extends Component {
                 </header>
 
                 <main>
-                    <Route path='/map' render={() => <MapContainer mode='user' />} />
-                    <Route path='/login' render={() => <Login onSignin={this.handleSignIn} isAuth={this.props.isAuth} />  } />
+                    <Route
+                        path='/map'
+                        render={() => <MapContainer mode='user' /> }
+                    />
+                    <Route
+                        path='/login'
+                        render={() => <Login onSignin={this.handleSignIn} isAuth={this.props.isAuth} /> }
+                    />
                     <PrivateRoute
                         exact
                         isAuth={this.props.isAuth}

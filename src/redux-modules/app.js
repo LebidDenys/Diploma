@@ -9,7 +9,12 @@ export const LOG_IN = 'app/LOG_IN';
 export const LOG_OUT = 'app/LOG_OUT';
 
 const filterMeasurements = (arr, key, value) => {
-    return arr.filter(item => item[key] === value)
+    try {
+        return arr.filter(item => item[key] === value)
+    } catch (err) {
+        return arr;
+    }
+
 };
 
 const initialState = {

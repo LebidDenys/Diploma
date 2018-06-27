@@ -8,7 +8,7 @@ import Map from './map.component'
 import MonthPicker from '../common/month-picker/month-picker.component'
 import { connect } from 'react-redux'
 import './styles.css'
-import { changeMonth, changeYear, fetchMeasurements } from '../../modules/app'
+import { changeMonth, changeYear, fetchMeasurements } from '../../redux-modules/app'
 
 class MapContainer extends Component {
     constructor(props){

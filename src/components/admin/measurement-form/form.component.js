@@ -7,7 +7,7 @@ import { toastr } from 'react-redux-toastr'
 import './styles.css'
 import MonthPicker from '../../common/month-picker/month-picker.component'
 import FormItem from '../../common/form-item/form-item.component'
-import { createMeasurement } from '../../../modules/app'
+import { createMeasurement } from '../../../redux-modules/app'
 import { connect } from 'react-redux';
 import { MeasurementShape, PointShape } from '../../common/constants/shapes';
 
@@ -15,17 +15,23 @@ class FormComponent extends Component {
     constructor(props){
         super(props);
         const id = props.match.params.id;
-        if(this.props.measurements && this.props.measurements.length === 0){
-            this.props.fetchData();
+        let measurement = [];
+        let points = [];
+        if(props.measurements && props.measurements.length === 0){
+            props.fetchData();
+        } else {
+            try {
+                measurement = props.measurements.filter(item => item._id === id);
+                props.points.forEach(point => points.push({
+                    text: `${point.city} ${point.pointNumber}`,
+                    value: point._id,
+                    lat: point.lat,
+                    lng: point.lng
+                }));
+            } catch (err) {
+                console.log(err)
+            }
         }
-        const measurement = props.measurements.filter(item => item._id === id);
-        const points = [];
-        props.points.forEach(point => points.push({
-            text: `${point.city} ${point.pointNumber}`,
-            value: point._id,
-            lat: point.lat,
-            lng: point.lng
-        }));
         this.state = {
             measurement: measurement.length !== 0 ?
                 measurement[0] :
@@ -47,14 +53,18 @@ class FormComponent extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        if(this.props.mode === 'edit'){
-            const id = nextProps.match.params.id;
-            const measurement = nextProps.measurements.filter(item => item._id === id);
-            if(measurement.length !== 0){
-                this.setState({
-                    measurement: measurement[0]
-                });
+        try {
+            if(this.props.mode === 'edit'){
+                const id = nextProps.match.params.id;
+                const measurement = nextProps.measurements.filter(item => item._id === id);
+                if(measurement.length !== 0){
+                    this.setState({
+                        measurement: measurement[0]
+                    });
+                }
             }
+        } catch (err) {
+            console.log(err)
         }
         const points = [];
         nextProps.points.forEach(point => points.push({

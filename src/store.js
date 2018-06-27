@@ -2,8 +2,8 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import createHistory from 'history/createBrowserHistory'
-import rootReducer from './modules'
-import { loadState, saveState } from './modules/localStorage'
+import rootReducer from './redux-modules'
+import { loadState, saveState } from './redux-modules/localStorage'
 
 export const history = createHistory()
 
@@ -41,6 +41,8 @@ store.subscribe(() => {
             month: 'dec',
             userData: store.getState().app.userData,
             isAuth: store.getState().app.isAuth,
+            measurements: [],
+            points: []
         }
     });
 });
